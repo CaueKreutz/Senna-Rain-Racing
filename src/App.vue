@@ -29,12 +29,11 @@ const integrantes = [
   },
   {
     id: 4,
-    foto: '/integrantes/foto_arthur.png',
-    name: 'Arthur Bertoli',
-    funcao: 'Gerente de Mídias',
-    frase: '“The nights are long but the years are short when you’re alive” - Red Hot Chili Peppers',
-    insta: 'https://www.instagram.com/bertoliarthur?igsh=djNnNWk5dHI1b2Vl&utm_source=qr',
-    linke: 'https://www.linkedin.com/in/arthur-bertoli-cardoso-227b9b231?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app',
+    foto: '/integrantes/foto_Guilherme1.png',
+    name: 'Guilherme França',
+    funcao: 'Engenheiro Chefe',
+    frase: '"turns out, teaching is the best way to learn"',
+    insta: 'https://www.instagram.com/francoa_086?igsh=YjFzcjIweDJhb3p1',
   },
   {
     id: 5,
