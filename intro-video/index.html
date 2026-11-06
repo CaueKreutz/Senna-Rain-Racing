@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=896, height=504" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      /* Padrão de fundo da intro SRR. Renderizado e reduzido pra 224x126; o site amplia, borra e recorta. */
+      :root {
+        --ground: #fff;
+        --ink: #000;
+        --u: 4px; /* 1 pixel da versão final */
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 896px;
+        height: 504px;
+        overflow: hidden;
+        background: var(--ground);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      #padrao {
+        position: absolute;
+        inset: 0;
+      }
+      #padrao i {
+        position: absolute;
+        display: block;
+        background: var(--ink);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="3.367" data-width="896" data-height="504">
+      <div id="padrao" class="clip" data-start="0" data-duration="3.367" data-track-index="0"></div>
+    </div>
+    <script>
+      // Quadros: 101 a 30 fps (mesma duração do original do kprverse)
+      const U = 4;
+      const CENTRO = 63;
+      const padrao = document.getElementById('padrao');
+
+      // aleatório com semente: o render é sempre igual
+      let semente = 7;
+      const rand = () => {
+        semente = (semente + 0x6d2b79f5) | 0;
+        let t = Math.imul(semente ^ (semente >>> 15), 1 | semente);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+
+      const peca = (x, y, w, h, origem) => {
+        const el = document.createElement('i');
+        Object.assign(el.style, {
+          left: x * U + 'px',
+          top: y * U + 'px',
+          width: w * U + 'px',
+          height: h * U + 'px',
+          transformOrigin: origem,
+        });
+        padrao.appendChild(el);
+        return el;
+      };
+
+      const tl = gsap.timeline({ paused: true });
+
+      // 1) traços fantasma na linha central e nas faixas de cima/baixo
+      const tracosCentro = [];
+      for (let x = 2; x < 222; x += 8) tracosCentro.push(peca(x, CENTRO - 1, 5, 2, 'center'));
+      const faixas = [];
+      for (const y of [3, 121]) {
+        let x = 2;
+        while (x < 220) {
+          const w = 2 + Math.floor(rand() * 7);
+          faixas.push(peca(x, y, Math.min(w, 222 - x), 2, 'left center'));
+          x += w + 2 + Math.floor(rand() * 4);
+        }
+      }
+      tl.fromTo(tracosCentro, { scaleX: 0.25, opacity: 0.35 }, { scaleX: 0.25, opacity: 0.35, duration: 0.01 }, 0);
+      tl.fromTo(faixas, { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: 'steps(4)', stagger: { each: 0.004, from: 'random' } }, 0.05);
+
+      // 2) colunas de barras crescem a partir da linha central
+      const colunas = [];
+      for (let x = 6; x < 218; x += 8) {
+        const c = {
+          cima: [peca(x, 22, 2, 37, 'bottom'), peca(x + 3, 22, 2, 37, 'bottom')],
+          baixo: [peca(x, 67, 2, 37, 'top'), peca(x + 3, 67, 2, 37, 'top')],
+          tampas: [peca(x, 22, 5, 2, 'center'), peca(x, 57, 5, 2, 'center'), peca(x, 67, 5, 2, 'center'), peca(x, 102, 5, 2, 'center')],
+        };
+        colunas.push(c);
+      }
+      for (const c of colunas) {
+        const barras = [...c.cima, ...c.baixo];
+        gsap.set(barras, { scaleY: 0 });
+        gsap.set(c.tampas, { scaleX: 0 });
+        const inicio = 0.23 + rand() * 0.37;
+        // às vezes uma barra do par nasce antes da outra
+        barras.forEach((b, i) => {
+          tl.to(b, { scaleY: 1, duration: 0.22, ease: 'expo.out' }, inicio + (i % 2) * rand() * 0.12);
+        });
+      }
+
+      // 3) linha central se liga
+      tl.to(tracosCentro, { scaleX: 1, opacity: 1, duration: 0.15, ease: 'steps(3)', stagger: { each: 0.006, from: 'center' } }, 0.6);
+
+      // 4) barras se fecham em anéis (0) ou arcos (C)
+      for (const c of colunas) {
+        const tipo = rand();
+        const t = 0.8 + rand() * 0.3;
+        const quais = tipo < 0.5 ? c.tampas : tipo < 0.8 ? [c.tampas[0], c.tampas[3]] : [c.tampas[1], c.tampas[2]];
+        tl.to(quais, { scaleX: 1, duration: 0.08, ease: 'steps(2)' }, t);
+      }
+
+      // 5) quebra: barras encolhem em pedaços e somem aos poucos
+      const pecas = [];
+      for (const c of colunas) {
+        for (const b of [...c.cima, ...c.baixo]) {
+          const t = 1.15 + rand() * 0.2;
+          tl.to(b, { scaleY: 0.12 + rand() * 0.3, y: (rand() - 0.5) * 6 * U, duration: 0.1, ease: 'steps(3)' }, t);
+          tl.to(b, { scaleY: 0, duration: 0.06, ease: 'steps(2)' }, 1.4 + rand() * 0.7);
+          pecas.push(b);
+        }
+        tl.to(c.tampas, { scaleX: 0, duration: 0.06, ease: 'steps(2)' }, 1.2 + rand() * 0.25);
+      }
+      tl.to(tracosCentro, { scaleX: 0, duration: 0.08, ease: 'steps(2)', stagger: { each: 0.03, from: 'random' } }, 1.5);
+      tl.to(faixas, { scaleX: 0, duration: 0.1, ease: 'steps(3)', stagger: { each: 0.008, from: 'random' } }, 1.45);
+
+      // 6) mira aparece à esquerda, onde fica a mira do nav do site, e fica até o fim
+      const MIRA_X = 18;
+      const mira = [
+        peca(MIRA_X - 1, 52, 2, 23, 'center'),
+        peca(MIRA_X - 8, CENTRO - 1, 16, 2, 'center'),
+        peca(MIRA_X - 4, 58, 2, 10, 'center'),
+        peca(MIRA_X + 2, 58, 2, 10, 'center'),
+      ];
+      tl.fromTo(mira, { scale: 0 }, { scale: 1, duration: 0.12, ease: 'steps(3)', stagger: 0.03 }, 1.25);
+
+      tl.set({}, {}, 3.367);
+      window.__timelines = window.__timelines || {};
+      window.__timelines['main'] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
