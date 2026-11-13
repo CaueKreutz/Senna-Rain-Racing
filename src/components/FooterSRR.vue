@@ -1,7 +1,6 @@
 <script setup>
 defineProps({
   links: { type: Array, required: true },
-  redes: { type: Array, required: true },
 });
 </script>
 
@@ -20,17 +19,15 @@ defineProps({
         </div>
         <div>
           <h4>Contato</h4>
-          <a href="mailto:sennarainracing@gmail.com">sennarainracing@gmail.com</a>
-          <a href="https://www.instagram.com/senna_rain_racing" target="_blank" rel="noopener">@senna_rain_racing</a>
-          <a href="https://www.tiktok.com/@senna.rain.racing" target="_blank" rel="noopener">@senna.rain.racing</a>
-        </div>
-        <div>
-          <h4>Redes</h4>
-          <div class="rodape__icones">
-            <a v-for="r in redes" :key="r.href" :href="r.href" target="_blank" rel="noopener" :aria-label="r.label">
-              <span class="fa-brands" :class="r.icon" aria-hidden="true"></span>
-            </a>
-          </div>
+          <a href="mailto:sennarainracing@gmail.com">
+            <span class="fa-solid fa-envelope" aria-hidden="true"></span>sennarainracing@gmail.com
+          </a>
+          <a href="https://www.instagram.com/senna_rain_racing" target="_blank" rel="noopener">
+            <span class="fa-brands fa-instagram" aria-hidden="true"></span>@senna_rain_racing
+          </a>
+          <a href="https://www.tiktok.com/@senna.rain.racing" target="_blank" rel="noopener">
+            <span class="fa-brands fa-tiktok" aria-hidden="true"></span>@senna.rain.racing
+          </a>
         </div>
       </div>
 
@@ -61,11 +58,11 @@ defineProps({
 
 .rodape__wordmark {
   margin: 0;
-  font-family: 'Archivo', sans-serif;
-  font-weight: 900;
-  font-size: clamp(5rem, 14vw, 11rem);
+  font-family: 'League Gothic', sans-serif;
+  font-weight: normal;
+  font-size: clamp(6rem, 16vw, 13rem);
   line-height: 0.8;
-  letter-spacing: -0.06em;
+  letter-spacing: 0.01em;
   color: #9a9a9a;
 }
 
@@ -76,7 +73,7 @@ defineProps({
 
 .rodape__colunas {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
 }
 
@@ -108,10 +105,10 @@ defineProps({
   color: var(--texto);
 }
 
-.rodape__icones {
-  display: flex;
-  gap: 1rem;
-  font-size: 1.3rem;
+.rodape a span {
+  width: 1.1em;
+  margin-right: 0.6rem;
+  text-align: center;
 }
 
 .rodape__base {
@@ -136,7 +133,7 @@ defineProps({
   }
 
   .rodape__colunas {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 }
 </style>

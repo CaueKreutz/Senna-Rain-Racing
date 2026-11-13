@@ -1,48 +1,62 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue';
 
-defineProps({ itens: { type: Array, required: true } });
+const props = defineProps({ itens: { type: Array, required: true } });
 
 const secao = ref(null);
-const visivel = ref(false);
-let obs;
+const cartas = ref([]);
+let frame = 0;
 
-// Cartas sobem e se espalham quando a seção entra na tela
+// Igual dontboardme: a seção fica presa na tela e cada carta sobe na sua fatia do scroll
+function atualizar() {
+  frame = 0;
+  const { top, height } = secao.value.getBoundingClientRect();
+  const total = height - innerHeight;
+  const p = total > 0 ? Math.min(Math.max(-top / total, 0), 1) : 1;
+  const n = props.itens.length;
+  cartas.value.forEach((el, i) => {
+    const t = Math.min(Math.max(p * (n + 0.4) - i, 0), 1); // +0.4: sobra scroll com todas na mesa
+    el.style.setProperty('--p', 1 - (1 - t) ** 3);
+  });
+}
+const agendar = () => frame || (frame = requestAnimationFrame(atualizar));
+
 onMounted(() => {
-  obs = new IntersectionObserver(([e]) => e.isIntersecting && (visivel.value = true), { threshold: 0.25 });
-  obs.observe(secao.value);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  addEventListener('scroll', agendar, { passive: true });
+  addEventListener('resize', agendar);
+  atualizar();
 });
-onUnmounted(() => obs?.disconnect());
+onUnmounted(() => {
+  removeEventListener('scroll', agendar);
+  removeEventListener('resize', agendar);
+  cancelAnimationFrame(frame);
+});
 
 const giros = [-4, 3, -2, 4];
 const icones = ['fa-flag-checkered', 'fa-screwdriver-wrench', 'fa-lightbulb', 'fa-trophy'];
 </script>
 
 <template>
-  <section ref="secao" class="missao" :class="{ visivel }" id="missao">
-    <div class="missao__topo">
-      <h2>NOSSA MISSÃO</h2>
-      <p>Transformar sonhos em conquistas, acelerando talentos nas pistas e levando nossa paixão pela excelência ao
-        cenário competitivo global.</p>
-    </div>
+  <section ref="secao" class="missao" id="missao" :style="{ '--n': itens.length }">
+    <div class="missao__palco">
+      <div class="missao__topo">
+        <h2>NOSSA MISSÃO</h2>
+        <p>Transformar sonhos em conquistas, acelerando talentos nas pistas e levando nossa paixão pela excelência ao
+          cenário competitivo global.</p>
+      </div>
 
-    <div class="missao__cartas">
-      <article v-for="(item, i) in itens" :key="item.id" class="carta"
-        :style="{ '--giro': giros[i % 4] + 'deg', transitionDelay: 0.12 * i + 's' }">
-        <div class="carta__aba">
-          <svg viewBox="0 0 82 27" aria-hidden="true">
-            <path
-              d="M4.68 19.27c1.74 0 3.16-1.41 3.16-3.16V6.32A6.32 6.32 0 0 1 14.15 0h53.28a6.32 6.32 0 0 1 6.32 6.32v9.79c0 1.75 1.41 3.16 3.16 3.16H82v3.68c0 1.74-1.41 3.16-3.16 3.16H3.16A3.16 3.16 0 0 1 0 22.95v-3.68z" />
-          </svg>
-          <span>missão</span>
-        </div>
-        <h3 class="carta__titulo">{{ item.title }}</h3>
-        <p class="carta__num">0{{ item.id }}.</p>
-        <p class="carta__texto">{{ item.explicacao }}</p>
-        <div class="carta__arte" aria-hidden="true">
-          <span class="fa-solid" :class="icones[i % 4]"></span>
-        </div>
-      </article>
+      <div class="missao__cartas">
+        <article v-for="(item, i) in itens" :key="item.id" ref="cartas" class="carta"
+          :style="{ '--giro': giros[i % 4] + 'deg', zIndex: i + 1 }">
+          <h3 class="carta__titulo">{{ item.title }}</h3>
+          <p class="carta__num">0{{ item.id }}.</p>
+          <p class="carta__texto">{{ item.explicacao }}</p>
+          <div class="carta__arte" aria-hidden="true">
+            <span class="fa-solid" :class="icones[i % 4]"></span>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 </template>
@@ -50,13 +64,27 @@ const icones = ['fa-flag-checkered', 'fa-screwdriver-wrench', 'fa-lightbulb', 'f
 <style scoped>
 .missao {
   background: var(--fundo-2);
-  padding: 7rem 1.5rem;
+  /* 1 tela presa + ~70% de tela de scroll por carta */
+  height: calc(100vh + var(--n) * 70vh);
+}
+
+.missao__palco {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3rem;
+  padding: 90px 1.5rem 2rem;
+  box-sizing: border-box;
 }
 
 .missao__topo {
   max-width: 760px;
-  margin: 0 auto 4rem;
+  margin: 0 auto;
   text-align: center;
 }
 
@@ -76,16 +104,18 @@ const icones = ['fa-flag-checkered', 'fa-screwdriver-wrench', 'fa-lightbulb', 'f
 }
 
 .missao__cartas {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2.5rem 1.5rem;
+  gap: 1.5rem;
 }
 
 .carta {
+  --p: 0;
   position: relative;
-  min-height: 460px;
+  min-height: 420px;
   padding: 1.5rem 0 4px;
   background: #f3f3f3;
   color: #3a0a0e;
@@ -95,42 +125,13 @@ const icones = ['fa-flag-checkered', 'fa-screwdriver-wrench', 'fa-lightbulb', 'f
   flex-direction: column;
   align-items: center;
   text-align: center;
-  opacity: 0;
-  transform: translateY(120px) rotate(0deg);
-  transition: opacity 0.6s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(calc((1 - var(--p)) * 110vh - var(--lift, 0px))) rotate(calc(var(--p) * var(--giro)));
+  transition: transform 0.2s ease-out;
+  will-change: transform;
 }
 
-.visivel .carta {
-  opacity: 1;
-  transform: rotate(var(--giro));
-}
-
-.visivel .carta:hover {
-  transform: rotate(0deg) translateY(-8px);
-  transition-delay: 0s !important;
-}
-
-.carta__aba {
-  position: absolute;
-  top: -26px;
-  left: 50%;
-  width: 82px;
-  height: 27px;
-  transform: translateX(-50%);
-}
-
-.carta__aba svg {
-  width: 100%;
-  height: 100%;
-  fill: #f3f3f3;
-}
-
-.carta__aba span {
-  position: absolute;
-  inset: 9px 0 0;
-  font-size: 10px;
-  text-transform: uppercase;
-  color: var(--vermelho);
+.carta:hover {
+  --lift: 8px;
 }
 
 .carta__titulo,
@@ -160,7 +161,7 @@ const icones = ['fa-flag-checkered', 'fa-screwdriver-wrench', 'fa-lightbulb', 'f
 .carta__arte {
   margin: auto 4px 0;
   align-self: stretch;
-  min-height: 140px;
+  min-height: 120px;
   border-radius: 2px;
   background: linear-gradient(135deg, var(--vermelho), var(--vermelho-escuro));
   display: grid;
@@ -169,8 +170,57 @@ const icones = ['fa-flag-checkered', 'fa-screwdriver-wrench', 'fa-lightbulb', 'f
   color: #f3f3f3;
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* Celular: cartas empilhadas no centro, cada uma cai por cima da anterior */
+@media (max-width: 900px) {
+  .missao__palco {
+    gap: 1.5rem;
+    padding-top: 100px;
+  }
+
+  .missao__cartas {
+    grid-template-columns: min(320px, 100%);
+    justify-content: center;
+  }
+
   .carta {
+    grid-area: 1 / 1;
+    min-height: 0;
+  }
+
+  .carta__titulo {
+    font-size: 2.6rem;
+  }
+
+  .carta__num {
+    font-size: 3rem;
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .carta__arte {
+    min-height: 90px;
+    font-size: 2.5rem;
+  }
+}
+
+/* Sem animação: seção normal, cartas já no lugar */
+@media (prefers-reduced-motion: reduce) {
+  .missao {
+    height: auto;
+  }
+
+  .missao__palco {
+    position: static;
+    height: auto;
+    padding: 7rem 1.5rem;
+  }
+
+  .missao__cartas {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .carta {
+    --p: 1;
+    grid-area: auto;
     transition: none;
   }
 }

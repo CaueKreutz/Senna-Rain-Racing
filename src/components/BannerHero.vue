@@ -2,9 +2,9 @@
 defineProps({ pronto: Boolean });
 
 const palavras = [
-  { sub: '01S', txt: 'SENNA.', cls: 'p1' },
-  { sub: '02R', txt: 'RAIN.', cls: 'p2' },
-  { sub: '03R', txt: 'RACING.', cls: 'p3' },
+  {txt: 'SENNA', cls: 'p1' },
+  {txt: 'RAIN', cls: 'p2' },
+  {txt: 'RACING', cls: 'p3' },
 ];
 </script>
 
@@ -34,15 +34,15 @@ const palavras = [
   overflow: hidden;
   background:
     linear-gradient(180deg, rgba(11, 11, 11, 0.6) 0%, transparent 22%),
-    linear-gradient(0deg, rgba(11, 11, 11, 0.85) 0%, transparent 45%),
-    linear-gradient(90deg, rgba(110, 0, 16, 0.55), transparent 60%),
+    linear-gradient(0deg, rgba(11, 11, 11, 0.85) 0%, transparent 40%),
+    linear-gradient(90deg, rgba(11, 11, 11, 0.85) , transparent 15%),
     url(/banner.jpg) center 30% / cover no-repeat;
   color: #fff;
 }
 
 .banner__texto {
   position: absolute;
-  top: 110px;
+  top: 210px;
   left: 120px;
   max-width: 270px;
   margin: 0;
@@ -58,8 +58,9 @@ const palavras = [
   font-family: 'Archivo', sans-serif;
   font-weight: 900;
   font-size: clamp(3.5rem, 11vw, 10rem);
-  line-height: 0.82;
+  line-height: 0.95;
   letter-spacing: -0.05em;
+  opacity: 0.9;
 }
 
 .banner__palavra {
@@ -76,11 +77,13 @@ const palavras = [
 }
 
 .p1 {
-  margin-left: 28%;
+  margin-left: 3.6em;
 }
-
 .p2 {
-  margin-left: 40%;
+  margin-left: 6.2em;
+}
+.p3 {
+  margin-left: 2.4em;
 }
 
 .banner__palavra small {
@@ -114,14 +117,17 @@ const palavras = [
     inset: auto 20px 70px 70px;
   }
 
-  .p1,
   .p2 {
-    margin-left: 0;
+    margin-left: 0.4em;
+  }
+
+  .p3 {
+    margin-left: 0.8em;
   }
 
   .banner__palavra small {
-    left: 0;
-    top: -1rem;
+    left: -1.8rem;
+    top: 0.3rem;
   }
 }
 

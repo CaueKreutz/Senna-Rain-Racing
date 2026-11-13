@@ -1,12 +1,9 @@
 <script setup>
-import { ref } from 'vue';
-
 defineProps({
   links: { type: Array, required: true },
   redes: { type: Array, required: true },
 });
 
-const menuAberto = ref(false);
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/_';
 
 // Efeito "hacky-text" do kprverse: embaralha as letras e revela da esquerda pra direita
@@ -34,11 +31,7 @@ function embaralhar(e) {
     <div class="frame__borda" aria-hidden="true"></div>
 
     <div class="frame__trilho">
-      <button class="frame__burger" :aria-expanded="menuAberto" aria-controls="menu-cheio"
-        @click="menuAberto = !menuAberto">
-        <span :class="{ x: menuAberto }"></span>
-        <span class="sr-only">Menu</span>
-      </button>
+      <span class="frame__burger" aria-hidden="true"><span></span></span>
       <span class="frame__mira" aria-hidden="true"></span>
       <span class="frame__pontos" aria-hidden="true">:::::</span>
     </div>
@@ -57,20 +50,6 @@ function embaralhar(e) {
       <span data-txt="INSTAGRAM">INSTAGRAM</span>
     </a>
 
-    <div id="menu-cheio" class="menu" :class="{ aberto: menuAberto }" :inert="!menuAberto">
-      <ul>
-        <li v-for="(l, i) in links" :key="l.href">
-          <a :href="l.href" @click="menuAberto = false">
-            <small>0{{ i + 1 }}</small>{{ l.label }}
-          </a>
-        </li>
-      </ul>
-      <div class="menu__redes">
-        <a v-for="r in redes" :key="r.href" :href="r.href" target="_blank" rel="noopener">
-          <span class="fa-brands" :class="r.icon" aria-hidden="true"></span> {{ r.label }}
-        </a>
-      </div>
-    </div>
   </header>
 </template>
 
@@ -84,7 +63,7 @@ function embaralhar(e) {
   inset: 0;
   z-index: 1000;
   pointer-events: none;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Poppins', sans-serif;
   color: #fff;
 }
 
@@ -97,6 +76,7 @@ function embaralhar(e) {
   inset: var(--gap);
   border: 1px solid var(--linha);
   border-radius: 6px;
+  z-index: 1; /* linha por cima da barra do topo */
 }
 
 .frame__trilho {
@@ -124,7 +104,6 @@ function embaralhar(e) {
   background: none;
   border: 0;
   border-bottom: 1px solid var(--linha);
-  cursor: pointer;
   display: grid;
   place-items: center;
 }
@@ -135,7 +114,6 @@ function embaralhar(e) {
   width: 26px;
   height: 1px;
   background: #fff;
-  transition: transform 0.3s;
 }
 
 .frame__burger span:first-child {
@@ -150,14 +128,7 @@ function embaralhar(e) {
   width: 18px;
 }
 
-.frame__burger span.x {
-  transform: rotate(45deg);
-}
 
-.frame__burger span.x::after {
-  width: 26px;
-  transform: translateY(-6px) rotate(-90deg);
-}
 
 .frame__mira {
   width: 38px;
@@ -200,12 +171,11 @@ function embaralhar(e) {
   gap: 2rem;
   margin: 0;
   padding: 0;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
 }
 
-.frame__links a,
-.menu a {
+.frame__links a {
   color: inherit;
   text-decoration: none;
 }
@@ -220,13 +190,13 @@ function embaralhar(e) {
   top: calc(var(--gap) + 1px);
   right: calc(var(--gap) + 1px);
   height: calc(var(--topo) - 2px);
-  padding: 0 1.75rem;
+  padding: 0 1.1rem;
   display: flex;
   align-items: center;
   background: #fff;
   color: #000;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   text-decoration: none;
   border-radius: 0 5px 0 0;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 14px 100%, 0 calc(100% - 14px));
@@ -239,74 +209,6 @@ function embaralhar(e) {
   color: #fff;
 }
 
-/* Menu cheio (burger) */
-.menu {
-  position: fixed;
-  top: calc(var(--gap) + var(--topo));
-  left: calc(var(--gap) + var(--trilho));
-  bottom: var(--gap);
-  width: min(460px, calc(100vw - 2 * var(--gap) - var(--trilho)));
-  box-sizing: border-box;
-  background: rgba(11, 11, 11, 0.94);
-  backdrop-filter: blur(12px);
-  border-right: 1px solid var(--linha);
-  padding: 2.5rem 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.5s cubic-bezier(0.77, 0, 0.18, 1);
-}
-
-.menu.aberto {
-  clip-path: inset(0 0 0 0);
-}
-
-.menu ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.5rem;
-}
-
-.menu ul a {
-  font-family: 'Archivo', sans-serif;
-  font-weight: 900;
-  font-size: clamp(1.3rem, 6vw, 2.6rem);
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  transition: color 0.2s;
-}
-
-.menu ul a:hover,
-.menu ul a:focus-visible {
-  color: var(--vermelho);
-}
-
-.menu small {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  font-weight: 400;
-  margin-top: 0.6em;
-}
-
-.menu__redes {
-  display: flex;
-  gap: 1.5rem;
-  font-size: 12px;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-}
 
 @media (max-width: 900px) {
   .frame {
@@ -320,10 +222,6 @@ function embaralhar(e) {
 
   .frame__trilho {
     border-right: 0;
-  }
-
-  .menu {
-    padding: 2rem 1.25rem;
   }
 
   .frame__burger {

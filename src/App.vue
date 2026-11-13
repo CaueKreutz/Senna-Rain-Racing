@@ -2,8 +2,11 @@
 import { ref } from 'vue';
 import IntroSRR from './components/IntroSRR.vue';
 import NavFrame from './components/NavFrame.vue';
-import BannerHero from './components/BannerHero.vue';
+// Banner anterior (foto de fundo antiga): import BannerHero from './components/BannerHero.vue';
+import BannerEquipe from './components/BannerEquipe.vue';
 import NossaMissao from './components/NossaMissao.vue';
+//import EquipeSRR from './components/EquipeSRR.vue';
+import EquipeQueda from './components/EquipeQueda.vue';
 import FooterSRR from './components/FooterSRR.vue';
 
 const introPronta = ref(false);
@@ -24,56 +27,57 @@ const redes = [
 const integrantes = [
   {
     id: 1,
-    foto: `/integrantes/foto_joao1.png`,
-    name: 'João Miguel de Medeiros',
-    funcao: 'Gestor de Projetos',
+    foto: '/integrantes/foto_joao2.jpeg',
+    name: 'João Medeiros',
+    funcao: 'Líder e Gestor do Projeto',
     frase: '“Disciplina é a ponte que liga nossos sonhos às nossas realizações.” -  Pat Tillman',
     insta: 'https://www.instagram.com/joaomeddeiross?igsh=MXNmamlucWF0NDcxMw%3D%3D&utm_source=qr',
     linke: 'https://www.linkedin.com/in/jo%C3%A3o-miguel-de-medeiros-4514472a0/',
   },
   {
     id: 2,
-    foto: '/integrantes/foto_pedro_correta1.png',
-    name: 'Pedro Miguel Setti de Jesus',
-    funcao: 'Engenheiro de modelagem',
-    frase: '“If you no longer go for a gap that exists, you are no longer a racing driver.” - Ayrton Senna',
-    insta: 'https://www.instagram.com/pedro_setti/',
-    linke: 'https://www.linkedin.com/in/pedro-miguel-setti-de-jesus-4b667b289/?originalSubdomain=br',
-  },
-  {
-    id: 3,
-    foto: '/integrantes/foto_julia1.png',
-    name: 'Julia Moreira Albino',
-    funcao: 'Gerente de Projeto Social',
+    foto: '/integrantes/foto_julia2.jpeg',
+    name: 'Julia Albino',
+    funcao: 'Gestora do Projeto Social',
     frase: '“Acredito ter habilidades para não ficar preso a uma máquina.” The Greatest Showman',
     insta: 'https://www.instagram.com/moreirajulia_bye?igsh=YjZ4eGZtdHZ2M2F3&utm_source=qr',
     linke: '',
   },
   {
-    id: 4,
-    foto: '/integrantes/foto_Guilherme1.png',
-    name: 'Guilherme França',
-    funcao: 'Engenheiro Chefe',
-    frase: '"turns out, teaching is the best way to learn"',
-    insta: 'https://www.instagram.com/francoa_086?igsh=YjFzcjIweDJhb3p1',
-  },
-  {
-    id: 5,
-    foto: '/integrantes/foto_franzoi1.png',
-    name: 'Leonardo Cunha Franzoi',
-    funcao: 'Gerente de Enterprise',
+    id: 3,
+    foto: '/integrantes/foto_franzoi2.jpeg',
+    name: 'Leonardo Franzoi',
+    funcao: 'Gerente de Empreendimento',
     frase: '“Não se assuste com a altura do voo. Quanto mais alto, mais longe do perigo” Santos Dumont',
     insta: 'https://www.instagram.com/leofranzzoi?igsh=bGw2dTdyeHZ5NXRm&utm_source=qr',
     linke: '',
   },
   {
-    id: 6,
-    foto: '/integrantes/foto_tigas1.png',
-    name: 'Tiago Felipe do Rosário',
-    funcao: 'Engenheiro Aerodinâmico',
-    frase: '"Seja você quem for, seja qual for sua posição social que você tenha na vida, a mais alta ou a mais baixa, tenha sempre como meta muita força, muita determinação e sempre faça tudo com amor e com muita fé em Deus, que um dia você chega lá. De alguma maneira você chega lá". - Aryton Senna',
-    insta: 'https://www.instagram.com/tigasxlm/',
+    id: 4,
+    foto: '/integrantes/foto_yasmin.jpeg',
+    name: 'Yasmin Machado',
+    funcao: 'Analista de Empreendimento',
+    frase: '',
+    insta: '',
     linke: '',
+  },
+  {
+    id: 5,
+    foto: '/integrantes/Tiago.jpeg',
+    name: 'Tiago Rosário',
+    funcao: 'Chefe de Engenharia e Aerodinâmica',
+    frase: '',
+    insta: '',
+    linke: '',
+  },
+  {
+    id: 6,
+    foto: '/integrantes/foto_pedro.jpeg',
+    name: 'Pedro Setti',
+    funcao: 'Engenheiro de Design e Manufatura',
+    frase: '“If you no longer go for a gap that exists, you are no longer a racing driver.” - Ayrton Senna',
+    insta: 'https://www.instagram.com/pedro_setti/',
+    linke: 'https://www.linkedin.com/in/pedro-setti-4b667b289',
   },
 ];
 
@@ -95,11 +99,16 @@ const missao = [
   },
 ];
 
-const patrocinadores = Array.from({ length: 12 }, (_, i) => ({
-  id: i + 1,
-  logo: `/patrocinadores/patrocinador${i === 0 ? '' : i}.png`,
-  link: '',
-}));
+const patrocinadores = [
+  'patrocinador1.png',
+  'patrocinador3.png',
+  'patrocinador6.png',
+  'patrocinador7.png',
+  'patrocinador8.png',
+  'patrocinador10.png',
+  'patrocinador11.png',
+  'alltech-logo.png', // Grupo Alltech
+].map((arquivo, i) => ({ id: i + 1, logo: `/patrocinadores/${arquivo}`, link: '' }));
 </script>
 
 <template>
@@ -107,7 +116,7 @@ const patrocinadores = Array.from({ length: 12 }, (_, i) => ({
   <NavFrame :links="links" :redes="redes" />
 
   <main>
-    <BannerHero :pronto="introPronta" />
+    <BannerEquipe :pronto="introPronta" />
 
     <!-- faixa de patrocinadores logo abaixo do banner, estilo CPX -->
     <section class="faixa" aria-label="Patrocinadores">
@@ -149,45 +158,33 @@ const patrocinadores = Array.from({ length: 12 }, (_, i) => ({
         <p class="tag">Trajetória</p>
         <h2>TORNEIOS</h2>
         <div class="torneios__numeros">
-          <div><strong>3º</strong><span>lugar geral no Regional 2024</span></div>
-          <div><strong>10</strong><span>indicações em 12 categorias</span></div>
-          <div><strong>1</strong><span>prêmio de Pensamento Criativo na Nacional</span></div>
+          <div><strong>+9</strong><span>Troféus na competição</span></div>
+          <div><strong>15º</strong><span>Lugar Geral no Nacional (2025)</span></div>
+          <div><strong>12º</strong><span>Lugar Geral no Nacional (2026)</span></div>
         </div>
-        <p>Nossa trajetória começou no Regional da Temporada 23/24, onde vivenciamos uma experiência repleta de
-          aprendizados e descobertas. No ano seguinte, a Senna Rain Racing teve um desempenho de destaque no Regional de
-          2024, sendo indicada a 10 prêmios em 12 categorias e conquistando o 3º lugar geral, o que nos garantiu a
-          classificação para a Etapa Nacional em Brasília.</p>
-        <p>Na Nacional, fomos reconhecidos com o prêmio de Pensamento Criativo, além de vivenciarmos uma rica troca de
-          experiências com equipes de todo o Brasil, fortalecendo nosso networking e visão de futuro.</p>
-        <p>Agora, seguimos com ainda mais determinação nos preparativos para o Regional da Temporada 25/26, prontos para
-          elevar nosso desempenho e alcançar novos horizontes.</p>
+        <p>A história da Senna Rain Racing (SRR) nos torneios de STEM Racing começou em 2023, quando participamos pela
+          primeira vez de uma competição regional. A experiência marcou o início da nossa jornada, proporcionando
+          aprendizados, desafios e os primeiros contatos com o universo da engenharia, gestão e inovação.</p>
+        <p>Em 2024, retornamos às pistas com uma equipe mais preparada e determinada. Os resultados expressivos
+          conquistados na etapa regional garantiram nossa classificação para o Torneio Nacional, representando um
+          importante marco na evolução da equipe.</p>
+        <p>Em 2025, alcançamos mais um capítulo dessa trajetória ao participarmos novamente do cenário nacional.
+          Conquistamos o prêmio de Pensamento Criativo e alcançamos o 15º lugar na classificação geral, demonstrando
+          nosso potencial e ampliando nossa experiência competitiva.</p>
+        <p>Em 2026, nossa evolução se refletiu em resultados ainda mais expressivos: conquistamos o 12º lugar geral no
+          Torneio Nacional e o reconhecimento de Melhor Projeto Social do Brasil. Essas conquistas representam não apenas
+          nosso crescimento técnico e organizacional, mas também o compromisso de utilizar a ciência, a tecnologia e a
+          inovação para gerar impacto positivo na sociedade.</p>
+        <p>De uma primeira participação marcada pelo aprendizado a conquistas de destaque nacional, cada torneio
+          representa um novo passo na construção da nossa história. Seguimos evoluindo, aprendendo e buscando novos
+          desafios, com o propósito de levar a Senna Rain Racing cada vez mais longe.</p>
       </div>
-      <img class="torneios__foto" src="/torneios.jpg" alt="Equipe Senna Rain Racing na Etapa Nacional" loading="lazy" />
+      <figure class="torneios__foto">
+        <img src="/integrantes/equipe_camp.jpeg" alt="Equipe Senna Rain Racing no Torneio Nacional" loading="lazy" />
+      </figure>
     </section>
 
-    <section class="secao" id="integrantes">
-      <p class="tag">Equipe</p>
-      <h2>INTEGRANTES</h2>
-      <div class="cards">
-        <article v-for="pessoa in integrantes" :key="pessoa.id" class="card">
-          <img :src="pessoa.foto" :alt="pessoa.name" class="card__foto" loading="lazy" />
-          <div class="card__corpo">
-            <p class="card__funcao">{{ pessoa.funcao }}</p>
-            <h3>{{ pessoa.name }}</h3>
-            <p class="card__frase">{{ pessoa.frase }}</p>
-            <div class="card__social">
-              <a :href="pessoa.insta" target="_blank" rel="noopener" :aria-label="'Instagram de ' + pessoa.name">
-                <span class="fab fa-instagram" aria-hidden="true"></span>
-              </a>
-              <a v-if="pessoa.linke" :href="pessoa.linke" target="_blank" rel="noopener"
-                :aria-label="'LinkedIn de ' + pessoa.name">
-                <span class="fab fa-linkedin" aria-hidden="true"></span>
-              </a>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
+    <EquipeQueda :pessoas="integrantes" />
 
     <NossaMissao :itens="missao" />
 
@@ -202,7 +199,7 @@ const patrocinadores = Array.from({ length: 12 }, (_, i) => ({
     </section>
   </main>
 
-  <FooterSRR :links="links" :redes="redes" />
+  <FooterSRR :links="links" />
 </template>
 
 <style>
@@ -386,80 +383,43 @@ h2 {
   font-size: 0.9rem;
 }
 
+/* centralizada e menor que a largura real da foto (1022px), pra não ampliar e pixelar */
 .torneios__foto {
+  position: relative;
+  width: min(100% - 3rem, 800px);
+  margin: 0 auto;
+  padding-bottom: 6rem;
+}
+
+/* moldura vermelha deslocada, igual à do "Quem somos" */
+.torneios__foto::before {
+  content: '';
+  position: absolute;
+  inset: 1.5rem -1.5rem calc(6rem - 1.5rem) 1.5rem;
+  border: 2px solid var(--vermelho);
+}
+
+.torneios__foto img {
+  position: relative;
   width: 100%;
-  height: clamp(140px, 22vw, 320px);
-  object-fit: cover;
+  height: auto; /* foto inteira, sem cortar */
   display: block;
-}
-
-/* Integrantes */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.card {
-  background: var(--fundo-2);
   border-bottom: 3px solid var(--vermelho);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(193, 18, 31, 0.25);
-}
-
-.card__foto {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  object-position: top;
-  background: linear-gradient(180deg, var(--vermelho-escuro), var(--fundo-2));
-}
-
-.card__corpo {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.card__funcao {
-  color: var(--vermelho);
-  font-size: 0.8rem;
+/* etiqueta vermelha no canto da foto */
+.torneios__foto figcaption {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--vermelho);
+  color: #fff;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin: 0;
-}
-
-.card h3 {
-  font-size: 2rem;
-  margin: 0.25rem 0 0.75rem;
-}
-
-.card__frase {
-  color: var(--texto-2);
-  font-size: 0.9rem;
-  font-style: italic;
-  line-height: 1.6;
-  flex-grow: 1;
-  margin: 0 0 1rem;
-}
-
-.card__social {
-  display: flex;
-  gap: 1rem;
-  font-size: 1.3rem;
-}
-
-.card__social a:hover,
-.card__social a:focus-visible {
-  color: var(--vermelho);
 }
 
 /* Patrocinadores */
@@ -511,6 +471,14 @@ h2 {
 
   .quem-somos__imagem::before {
     inset: 0.75rem -0.75rem -0.75rem 0.75rem;
+  }
+
+  .torneios__foto {
+    width: calc(100% - 3rem);
+  }
+
+  .torneios__foto::before {
+    inset: 0.75rem -0.75rem calc(6rem - 0.75rem) 0.75rem;
   }
 
   .patrocinadores {
